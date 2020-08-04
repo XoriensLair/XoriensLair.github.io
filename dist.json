@@ -1,0 +1,32 @@
+{
+    "minifyExtensions":[
+        "js",
+        "css",
+        "html",
+        "json"
+    ],
+    "paths":[
+        "api",
+        "client",
+        "config",
+        "__init__.py",
+        "session.py",
+        "logging.conf",
+        "permissions.json",
+        "requirements.txt"
+    ],
+    "exclude":[
+        "docs_html",
+        "__pycache__",
+        "spell_info.json"
+    ],
+    "target":"dist",
+    "binaries":[
+        "png",
+        "jpg",
+        "svg",
+        "ico",
+        "xcf",
+        "ttf"
+    ]
+}

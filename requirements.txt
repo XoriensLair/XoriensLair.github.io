@@ -1,0 +1,15 @@
+html2text
+newrelic
+discord
+cachetools
+numexpr
+pillow
+fuzzywuzzy
+simpleeval
+python-meteor
+python-Levenshtein
+bson
+gspread
+d20
+yarl==1.4.2
+markdown2

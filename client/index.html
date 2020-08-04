@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Xorien's Lair</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="pack/sha.js"></script>
+        <script src="pack/crc.js"></script>
+        <script src="scripts/cookies.js"></script>
+        <script>
+            function command(command, data, port, callback) {
+                var sendData = {
+                    "command":command,
+                    "kwargs":data
+                };
+                $.post(
+                    'http://' + self.location.hostname + ':' + port.toString(),
+                    sendData,
+                    callback,
+                    'json'
+                );
+            }
+        </script>
+        <script src="scripts/index.js"></script>
+        <script src="scripts/utils.js"></script>
+        <link rel="stylesheet" type="text/css" href="style/common.css">
+        <link rel="stylesheet" type="text/css" href="style/tooltips.css">
+        <link rel="stylesheet" type="text/css" href="style/index.css">
+    </head>
+    <body>
+        <div id='modal-back'></div>
+        <div id='title-div' class="noselect">
+            <h1>Xorien's Lair</h1>
+            <h3>A Session Management Tool for the Power-Hungry DM</h4>
+        </div>
+        <div id='action-buttons'>
+            <button id='new-session' data-tooltip="Start a new session">New Session</button>
+            <button id='join-session' data-tooltip="Join an ongoing session">Join Session</button>
+            <button id='load-session' data-tooltip="Load a session from file">Load Session</button>
+            <input id="load-input" type="file" name="name" style="display: none;" accept=".json">
+        </div>
+        <div id='join-dialog' class='dialog'>
+            <input id='cname-input' placeholder="Character/Player Name">
+            <input id='sid-input' placeholder="Session ID">
+            <input id='psw-input' placeholder="Session Password">
+            <button id='join-btn'>Join</button>
+        </div>
+        <div id="new-dialog" class='dialog'>
+            <input id='name-input' placeholder="Session Name">
+            <input id='psw-new' placeholder="Session Password">
+            <button id='create-btn'>Create</button>
+        </div>
+        <div id="rejoin-dialog" class='dialog'>
+            <p>It looks like you left a game that is still running. Would you like to rejoin?</p>
+            <div id='rejoinbuttons'>
+                <button id="rj-yes-button">Yes</button>
+                <button id="rj-no-button">No</button>
+            </div>
+        </div>
+        <div id='bottom-bar'>
+            <span>Created by Matteo Harris - Licensed under the <a href='license/LICENSE.txt' target="_blank">MIT License</a>.</span>
+        </div>
+    </body>
+</html>
