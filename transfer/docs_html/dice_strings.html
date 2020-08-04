@@ -1,0 +1,261 @@
+<head>
+	<title>Documentation - dice_strings</title>
+	<link rel="stylesheet" type="text/css" href="../style/docs.css">
+</head>
+<body>
+	<h1 id="dice-syntax-for-complex-dice-strings">Dice Syntax for Complex Dice Strings</h1>
+	
+	<p><em>Documentation of <a target="_blank" href="https://github.com/avrae/d20/blob/master/README.md">avrae/d20</a></em><br />
+	This is the grammar supported by the dice parser, roughly ordered in how tightly the grammar binds.</p>
+	
+	<h3 id="numbers">Numbers</h3>
+	
+	<p>These are the atoms used at the base of the syntax tree.</p>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Name</th>
+	  <th>Syntax</th>
+	  <th>Description</th>
+	  <th>Examples</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>literal</td>
+	  <td><code>INT</code>, <code>DECIMAL</code></td>
+	  <td>A literal number.</td>
+	  <td><code>1</code>, <code>0.5</code>, <code>3.14</code></td>
+	</tr>
+	<tr>
+	  <td>dice</td>
+	  <td><code>INT? "d" INT</code></td>
+	  <td>A set of die.</td>
+	  <td><code>d20</code>, <code>3d6</code></td>
+	</tr>
+	<tr>
+	  <td>set</td>
+	  <td><code>"(" (num ("," num)* ","?)? ")"</code></td>
+	  <td>A set of expressions.</td>
+	  <td><code>()</code>, <code>(2,)</code>, <code>(1, 3+3, 1d20)</code></td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<p>Note that <code>(3d6)</code> is equivalent to <code>3d6</code>, but <code>(3d6,)</code> is the set containing the one element <code>3d6</code>.</p>
+	
+	<h3 id="set-operations">Set Operations</h3>
+	
+	<p>These operations can be performed on dice and sets.</p>
+	
+	<h4 id="grammar">Grammar</h4>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Name</th>
+	  <th>Syntax</th>
+	  <th>Description</th>
+	  <th>Examples</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>set_op</td>
+	  <td><code>operation selector</code></td>
+	  <td>An operation on a set (see below).</td>
+	  <td><code>kh3</code>, <code>ro&lt;3</code></td>
+	</tr>
+	<tr>
+	  <td>selector</td>
+	  <td><code>seltype INT</code></td>
+	  <td>A selection on a set (see below).</td>
+	  <td><code>3</code>, <code>h1</code>, <code>&gt;2</code></td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<h4 id="operators">Operators</h4>
+	
+	<p>Operators are always followed by a selector, and operate on the items in the set that match the selector.</p>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Syntax</th>
+	  <th>Name</th>
+	  <th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>k</td>
+	  <td>keep</td>
+	  <td>Keeps all matched values.</td>
+	</tr>
+	<tr>
+	  <td>p</td>
+	  <td>drop</td>
+	  <td>Drops all matched values.</td>
+	</tr>
+	<tr>
+	  <td>rr</td>
+	  <td>reroll</td>
+	  <td>Rerolls all matched values until none match. (Dice only)</td>
+	</tr>
+	<tr>
+	  <td>ro</td>
+	  <td>reroll once</td>
+	  <td>Rerolls all matched values once. (Dice only)</td>
+	</tr>
+	<tr>
+	  <td>ra</td>
+	  <td>reroll and add</td>
+	  <td>Rerolls up to one matched value once, keeping the original roll. (Dice only)</td>
+	</tr>
+	<tr>
+	  <td>e</td>
+	  <td>explode on</td>
+	  <td>Rolls another die for each matched value. (Dice only)</td>
+	</tr>
+	<tr>
+	  <td>mi</td>
+	  <td>minimum</td>
+	  <td>Sets the minimum value of each die. (Dice only)</td>
+	</tr>
+	<tr>
+	  <td>ma</td>
+	  <td>maximum</td>
+	  <td>Sets the maximum value of each die. (Dice only)</td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<h4 id="selectors">Selectors</h4>
+	
+	<p>Selectors select from the remaining kept values in a set.</p>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Syntax</th>
+	  <th>Name</th>
+	  <th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>X</td>
+	  <td>literal</td>
+	  <td>All values in this set that are literally this value.</td>
+	</tr>
+	<tr>
+	  <td>hX</td>
+	  <td>highest X</td>
+	  <td>The highest X values in the set.</td>
+	</tr>
+	<tr>
+	  <td>lX</td>
+	  <td>lowest X</td>
+	  <td>The lowest X values in the set.</td>
+	</tr>
+	<tr>
+	  <td>>X</td>
+	  <td>greater than X</td>
+	  <td>All values in this set greater than X.</td>
+	</tr>
+	<tr>
+	  <td><X</td>
+	  <td>less than X</td>
+	  <td>All values in this set less than X.</td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<h3 id="unary-operations">Unary Operations</h3>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Syntax</th>
+	  <th>Name</th>
+	  <th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>+X</td>
+	  <td>positive</td>
+	  <td>Does nothing.</td>
+	</tr>
+	<tr>
+	  <td>-X</td>
+	  <td>negative</td>
+	  <td>The negative value of X.</td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<h3 id="binary-operations">Binary Operations</h3>
+	
+	<table>
+	<thead>
+	<tr>
+	  <th>Syntax</th>
+	  <th>Name</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>X * Y</td>
+	  <td>multiplication</td>
+	</tr>
+	<tr>
+	  <td>X / Y</td>
+	  <td>division</td>
+	</tr>
+	<tr>
+	  <td>X // Y</td>
+	  <td>int division</td>
+	</tr>
+	<tr>
+	  <td>X % Y</td>
+	  <td>modulo</td>
+	</tr>
+	<tr>
+	  <td>X + Y</td>
+	  <td>addition</td>
+	</tr>
+	<tr>
+	  <td>X - Y</td>
+	  <td>subtraction</td>
+	</tr>
+	<tr>
+	  <td>X == Y</td>
+	  <td>equality</td>
+	</tr>
+	<tr>
+	  <td>X &gt;= Y</td>
+	  <td>greater/equal</td>
+	</tr>
+	<tr>
+	  <td>X &lt;= Y</td>
+	  <td>less/equal</td>
+	</tr>
+	<tr>
+	  <td>X &gt; Y</td>
+	  <td>greater than</td>
+	</tr>
+	<tr>
+	  <td>X &lt; Y</td>
+	  <td>less than</td>
+	</tr>
+	<tr>
+	  <td>X != Y</td>
+	  <td>inequality</td>
+	</tr>
+	</tbody>
+	</table>
+	
+</body>

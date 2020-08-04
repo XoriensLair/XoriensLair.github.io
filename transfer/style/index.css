@@ -1,0 +1,105 @@
+html {
+    margin: 0px;
+    padding: 0px;
+    background-image: linear-gradient(to top, rgb(67, 78, 80), rgb(82, 112, 117));
+    font-family: roboto;
+    background-size: cover;
+    min-height: 100%;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    color: rgb(240,240,240);
+    font-family: roboto-bold;
+}
+
+h3 {
+    color: rgb(195, 195, 195);
+    font-family: roboto-thin;
+}
+
+#title-div {
+    margin-top: 30vh;
+    text-align: center;
+}
+
+#action-buttons {
+    margin: auto;
+    width: fit-content;
+    margin-top: 10vh;
+}
+
+#action-buttons button {
+    border-radius: 5px;
+    padding: 15px;
+    color: rgb(240,240,240);
+    background-color: rgb(55, 63, 65);
+    border: 2px solid rgb(42, 48, 49);
+    font-family: roboto;
+    font-size: 20px;
+    margin: 10px;
+    transition: background-color 0.1s;
+    z-index: 5000;
+}
+
+#action-buttons button:focus {
+    outline: none;
+}
+
+#action-buttons button:hover {
+    background-color: rgb(42, 48, 49);
+}
+
+#bottom-bar {
+    position: absolute;
+    width: 100vw;
+    height: 4vh;
+    font-size: 2vh;
+    color: rgb(240,240,240);
+    font-family: roboto-thin;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgb(58, 68, 70);
+}
+
+#bottom-bar span {
+    position: absolute;
+    bottom: 1vh;
+    left: 50%;
+    transform: translate(-50%,0%);
+}
+
+#bottom-bar a {
+    color: rgb(240,240,240);
+}
+
+#rejoinbuttons button {
+    display: inline-block;
+    width: 49%;
+    box-sizing: border-box;
+    margin: auto;
+}
+
+#rj-yes-button {
+    background-color: rgb(14, 165, 14);
+    border-color: rgb(12, 148, 12);
+}
+#rj-yes-button:hover {
+    background-color: rgb(12, 148, 12);
+}
+#rj-no-button {
+    background-color: rgb(211, 25, 25);
+    border-color: rgb(170, 21, 21);
+}
+#rj-no-button:hover {
+    background-color: rgb(170, 21, 21);
+}
+
+.dialog {
+    width: 50vw;
+}

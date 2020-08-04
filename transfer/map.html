@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Xorien's Lair - Map Display</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="pack/sha.js"></script>
+        <script src="pack/crc.js"></script>
+        <script src="scripts/cookies.js"></script>
+        <script src="scripts/utils.js"></script>
+        <script src="scripts/refresh.js"></script>
+        <script src="scripts/ctx.js"></script>
+        <script src="scripts/misc.js"></script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" type="text/css" href="style/common.css">
+        <link rel="stylesheet" type="text/css" href="style/tooltips.css">
+        <link rel="stylesheet" type="text/css" href="style/map.css">
+    </head>
+    <body>
+        <div id="modal-back"></div>
+        <div id="no-conn">
+            <div id='no-conn-content'>
+                <h3>Server Offline or Unresponsive</h3>
+                <p>
+                    Could not connect to the server. The server may be restarting, in which case it will restart in a minute or so. 
+                    If this does not happen, contact iTecX#8050 on Discord.
+                </p>
+            </div>
+        </div>
+        <iframe id="downloader" style="display:none;"></iframe>
+        <div id='custom-ctx'>
+            <button class='ctx-button' id='ctx_map-close' ctx='map-close'>Close Map</button>
+            <button class='ctx-button' id='ctx_add-pc' ctx='add-pc'>Add Player Character</button>
+            <button class='ctx-button' id='ctx_add-npc' ctx='add-npc'>Add NPC</button>
+            <button class='ctx-button' id='ctx_remove-pc' ctx='remove-pc'>Close Player Character</button>
+            <button class='ctx-button' id='ctx_remove-pc-dm' ctx='remove-pc-dm'>Close Player Character</button>
+            <button class='ctx-button' id='ctx_remove-npc' ctx='remove-npc'>Remove NPC</button>
+            <button class='ctx-button' id='ctx_run-initiative' ctx='run-initiative'>Roll Initiative</button>
+            <button class='ctx-button' id='ctx_remove-initiative' ctx='remove-initiative'>Remove From Initiative</button>
+            <button class='ctx-button' id='ctx_set-pc-hp' ctx='set-pc-hp'>Set HP</button>
+            <button class='ctx-button' id='ctx_set-pc-max-hp' ctx='set-pc-max-hp'>Set Maximum HP</button>
+            <button class='ctx-button' id='ctx_change-pc-hp' ctx='change-pc-hp'>Change HP</button>
+            <button class='ctx-button' id='ctx_edit-pc' ctx='edit-pc'>Edit Statistics</button>
+            <button class='ctx-button' id='ctx_claim-pc' ctx='claim-pc'>Claim Character</button>
+            <button class='ctx-button' id='ctx_attack' ctx='attack'>Attack</button>
+            <button class='ctx-button' id='ctx_dm-attack' ctx='dm-attack'>Attack</button>
+        </div>
+
+        <div id='cursors-bar'>
+            <button id='set-cursor-normal' name='default'><img src="assets/cursor.png"><div>Select</div></button>
+            <button id='set-cursor-move' name='move'><img src="assets/move.png"><div>Move</div></button>
+            <button id='set-cursor-obscure' name='crosshair' class='dm-only'><img src="assets/obscure.png"><div>Obscure</div></button>
+        </div>
+
+        <div id='top-bar'>
+            <h3><span id='session-name'>Session Name: NULL</span><span id='share-link-txt'>Share Link</span></h3>
+            <div id='share-link' data-tooltip='Click to Copy' data-tooltip-location="bottom">NULL</div>
+            <button id='toggle-chat-btn' data-tooltip="Messages" data-tooltip-location="right">
+                <img src="assets/chaticon.png">
+                <div id='notify-num'></div>
+            </button>
+            <button id='toggle-help-btn' data-tooltip="Help" data-tooltip-location="right">
+                <img src="assets/help.png">
+            </button>
+        </div>
+        <div id='message-window'>
+            <div id='message-box'>
+                
+            </div>
+            <div id='message-widget'>
+                <input id='new-msg-inp' placeholder="Message" autocomplete="off">
+                <button id='send-msg'><img src='assets/send.png'></button>
+            </div>
+        </div>
+        <div id='help-panel'>
+            <div id='help-title'>About</div>
+            <div id='help-menu'>
+                <div id='help-top'>Help & About</div>
+                <div id='help-sections'>
+
+                </div>
+                <iframe id='help-display' src='docs_html/about.html'>
+                </iframe>
+            </div>
+        </div>
+        <div id='users-bar'>
+            <div id='user-area'></div>
+            <div class='user-buttons' id='player-buttons'>
+                <button id='edit-name' data-tooltip='Edit Player Name' data-tooltip-location="right"><img src="assets/editname.png"></button>
+                <button id='set-sheet' data-tooltip='Import Sheet' data-tooltip-location="right"><img src="assets/sheet.png"></button>
+                <button id='update-sheet' data-tooltip='Update Sheet' data-tooltip-location="right"><img src="assets/update_sheet.png"></button>
+                <button id='set-icon' data-tooltip='Set Player Icon' data-tooltip-location="right"><img src="assets/avatar.png"></button>
+                <input id='set-icon-file' style='display: none;' type="file">
+            </div>
+            <div class='user-buttons' id='dm-buttons'>
+                <button id='load-critterdb' data-tooltip='Load CritterDB Homebrew' data-tooltip-location="right"><img src="assets/ghost.png"></button>
+                <button id='reload-critterdb' data-tooltip='Update CritterDB Homebrews' data-tooltip-location="right"><img src="assets/ghost_reload.png"></button>
+                <button id='save-session' data-tooltip='Save Session' data-tooltip-location="right"><img src="assets/save.png"></button>
+                <button id='manage-maps' data-tooltip='Manage Maps' data-tooltip-location="right"><img src="assets/map.png"></button>
+                <input id='load-map-file' style='display: none;' type="file">
+                <button id='settings' data-tooltip='Settings' data-tooltip-location="right"><img src="assets/settings.png"></button>
+                <button id='adv-init' data-tooltip='Advance Initiative' data-tooltip-location="right"><img src="assets/next.png"></button>
+                <button id='adv-stop' data-tooltip='End Initiative' data-tooltip-location="right"><img src="assets/stop.png"></button>
+            </div>
+        </div>
+
+        <div id='dice-tabs' class="noselect">
+            <button id='d4-btn' class='dice-btn noselect'><img src='assets/dice/d4.png'></button>
+            <button id='d6-btn' class='dice-btn noselect'><img src='assets/dice/d6.png'></button>
+            <button id='d8-btn' class='dice-btn noselect'><img src='assets/dice/d8.png'></button>
+            <button id='d10-btn' class='dice-btn noselect'><img src='assets/dice/d10.png'></button>
+            <button id='d12-btn' class='dice-btn noselect'><img src='assets/dice/d12.png'></button>
+            <button id='d20-btn' class='dice-btn noselect'><img src='assets/dice/d20.png'></button>
+            <button id='d100-btn' class='dice-btn noselect'><img src='assets/dice/d100.png'></button>
+            <button id='dcustom-btn' class='dice-btn noselect'><img src='assets/editname.png'></button>
+            <div id='dice-display' class='bold'>You rolled: <span id='roll-result'></span></div>
+            <div id='dice-input'><input id='dice-str-inp' placeholder="Roll String" autocomplete="off"></div>
+        </div>
+        
+        
+        <div id='display'>
+            <div id='display-area'></div>
+        </div>
+
+        <!-- Dialogs -->
+        <div id='change-name-dialog' class='dialog'>
+            <p>Change nickname:</p>
+            <input id='change-nick-input' placeholder="Nickname" size="30">
+            <button id='submit-nick'>Change Nickname</button>
+        </div>
+
+        <div id='set-sheet-dialog' class='dialog'>
+            <p>Enter sheet URL (GSheet2 share link):</p>
+            <input id='set-sheet-input' placeholder="URL" size="30">
+            <iframe src='null' id='sheet-frame'><p>Entered URL does not link to a sheet.</p></iframe>
+            <button id='submit-sheet'>Set Sheet</button>
+        </div>
+
+        <div id='critterdb-dialog' class='dialog'>
+            <p>Enter Critter or Bestiary URL (Make sure that link sharing is turned ON):</p>
+            <input id='critterdb-input' placeholder="URL" size="30">
+            <button id='submit-critterdb'>Load Critter</button>
+        </div>
+
+        <!-- Large Dialogs -->
+
+        <!-- Settings -->
+        <div id='settings-menu' class='large-dialog'>
+            <h2>Settings</h2>
+            <div class='block'>
+                <h3>Set Session Name</h3>
+                <input id='session-name-set' placeholder="Set Name" size="30">
+            </div>
+            <div class='block'>
+                <h3>Set Session Password</h3>
+                <input id='session-psw-set' placeholder="Set Password" size="30">
+            </div>
+            <div class='block'>
+                <h3>Purge Session</h3>
+                <button id='session-reset'>Purge</button>
+            </div>
+            <div id='settings-switches'>
+                <label class="large-switch" id='set_roll-logging'>
+                    <input type="checkbox">
+                    <span class="large-slider round"></span>
+                </label><span class="bold">Roll Logging</span>
+            </div>
+            <button class='submit-button' id='settings-submit'>Finish</button>
+        </div>
+
+        <!-- Map manager -->
+        <div id='manage-maps-menu' class="large-dialog">
+            <h2>Manage Maps</h2>
+            <div class='action-btns' id='map-actions'>
+                <button id='remove-map' data-tooltip="Remove Map"><img src="assets/delete.png"></button>
+                <button id='place-map' data-tooltip="Place Map"><img src="assets/place.png"></button>
+                <button id='mod-map' data-tooltip="Change Map Dimensions & Grid Size"><img src="assets/settings.png"></button>
+            </div>
+            <div class='inline-block' id='maps-area'></div>
+            <div class='inline-block' id='map-options'>
+                <h3 style="width: 20%;text-align:center;">Map Size</h3>
+                <input style="width: 33%; text-align: center;" id="map-cols" type="number" placeholder="Columns" value='20'><span style="color: rgb(239, 243, 251);width:4%;font-family:roboto;text-align: center;"> X </span><input style="width: 33%; text-align: center;" id="map-rows" type="number" placeholder="Rows" value='20'>
+                <h3 style="width: 20%;text-align:center;margin-top:2%;">Grid Size</h3>
+                <input style="width: 73%; text-align: center;" type="number" id="grid-size-inp" placeholder="Grid Size (feet)" value='5'>
+                <button style="width: 100%;margin-top: 2vh;" id='load-map'>Load New Map</button>
+            </div>
+        </div>
+
+        <!-- NPC Maker -->
+        <div id='npc-menu' class="large-dialog">
+            <h2>NPC Maker</h2>
+            <div class='inline-block' id='search-bar'>
+                <h3 style="width: 20%;text-align:center;">NPC/Monster Search</h3>
+                <input style="width: 74%; text-align: center;" id="npc-search" placeholder="Search...">
+            </div>
+            <div class='inline-block' id='search-results'></div>
+            <div class='inline-block' id='mod-inputs'>
+                <h3 style="width: 10%;text-align:center;">Name</h3>
+                <input style="width: 36%; text-align: center;" id="npc-name-inp" placeholder="Name">
+                <h3 style="width: 10%;text-align:center;">Hit Points</h3>
+                <input style="width: 36%; text-align: center;" id="npc-hp-inp" placeholder="Hit Points" type="number">
+            </div>
+            <br>
+            <div id='npc-icon-select'>
+                <div class="npc-icon" id="npc-icon-upload" name="upload" data="null">
+                    <img src="assets/upload.png">
+                </div>
+                <input id="npc-icon-file" type="file" style="display: none;">
+                <div class="npc-icon" id="npc-icon-open5e" name="open5e" style="display: none;"><img src="assets/icons/Dice.png"></div>
+            </div>
+            <button class='submit-button' id='npc-submit'>Create NPC</button>
+        </div>
+
+        <!-- PC Stat Editor -->
+        <div id='pc-editor' class="large-dialog" editing='null'>
+            <h2>PC Stats Editor</h2>
+            <div id='stats-scores-editor' class='block'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STR</th>
+                            <th>DEX</th>
+                            <th>CON</th>
+                            <th>INT</th>
+                            <th>WIS</th>
+                            <th>CHA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id='scores-row'>
+                            <td><input id='str-score-input' value='0' placeholder="STR" maxlength="2" type="number" min="0" max="30" key='stats.strength'></td>
+                            <td><input id='dex-score-input' value='0' placeholder="DEX" maxlength="2" type="number" min="0" max="30" key='stats.dexterity'></td>
+                            <td><input id='con-score-input' value='0' placeholder="CON" maxlength="2" type="number" min="0" max="30" key='stats.constitution'></td>
+                            <td><input id='int-score-input' value='0' placeholder="INT" maxlength="2" type="number" min="0" max="30" key='stats.intelligence'></td>
+                            <td><input id='wis-score-input' value='0' placeholder="WIS" maxlength="2" type="number" min="0" max="30" key='stats.wisdom'></td>
+                            <td><input id='cha-score-input' value='0' placeholder="CHA" maxlength="2" type="number" min="0" max="30" key='stats.charisma'></td>
+                        </tr>
+                        <tr id='bonus-row' class='view-row'>
+                            <td id='str-bonus'>STR Modifier: <span class='value'>0</span></td>
+                            <td id='dex-bonus'>DEX Modifier: <span class='value'>0</span></td>
+                            <td id='con-bonus'>CON Modifier: <span class='value'>0</span></td>
+                            <td id='int-bonus'>INT Modifier: <span class='value'>0</span></td>
+                            <td id='wis-bonus'>WIS Modifier: <span class='value'>0</span></td>
+                            <td id='cha-bonus'>CHA Modifier: <span class='value'>0</span></td>
+                        </tr>
+                        <tr id='saves-row' class='view-row'>
+                            <td id='str-save'>STR Save: <span class='value'>0</span></td>
+                            <td id='dex-save'>DEX Save: <span class='value'>0</span></td>
+                            <td id='con-save'>CON Save: <span class='value'>0</span></td>
+                            <td id='int-save'>INT Save: <span class='value'>0</span></td>
+                            <td id='wis-save'>WIS Save: <span class='value'>0</span></td>
+                            <td id='cha-save'>CHA Save: <span class='value'>0</span></td>
+                        </tr>
+                        <tr id='skills-1' class='view-row'>
+                            <td>Athletics: <span id='athletics-skill' class='value'>0</span></td>
+                            <td>Acrobatics: <span id='acrobatics-skill' class='value'>0</span></td>
+                            <td> - </td>
+                            <td>Arcana: <span id='arcana-skill' class='value'>0</span></td>
+                            <td>Animal Handling: <span id='animalHandling-skill' class='value'>0</span></td>
+                            <td>Deception: <span id='deception-skill' class='value'>0</span></td>
+                        </tr>
+                        <tr id='skills-2' class='view-row'>
+                            <td> - </td>
+                            <td>Sleight of Hand: <span id='sleightOfHand-skill' class='value'>0</span></td>
+                            <td> - </td>
+                            <td>History: <span id='history-skill' class='value'>0</span></td>
+                            <td>Insight: <span id='insight-skill' class='value'>0</span></td>
+                            <td>Intimidation: <span id='intimidation-skill' class='value'>0</span></td>
+                        </tr>
+                        <tr id='skills-3' class='view-row'>
+                            <td> - </td>
+                            <td>Stealth: <span id='stealth-skill' class='value'>0</span></td>
+                            <td> - </td>
+                            <td>Investigation: <span id='investigation-skill' class='value'>0</span></td>
+                            <td>Medicine: <span id='medicine-skill' class='value'>0</span></td>
+                            <td>Performance: <span id='performance-skill' class='value'>0</span></td>
+                        </tr>
+                        <tr id='skills-4' class='view-row'>
+                            <td> - </td>
+                            <td> - </td>
+                            <td> - </td>
+                            <td>Nature: <span id='nature-skill' class='value'>0</span></td>
+                            <td>Perception: <span id='perception-skill' class='value'>0</span></td>
+                            <td>Persuasion: <span id='persuasion-skill' class='value'>0</span></td>
+                        </tr>
+                        <tr id='skills-5' class='view-row'>
+                            <td> - </td>
+                            <td> - </td>
+                            <td> - </td>
+                            <td>Religion: <span id='religion-skill' class='value'>0</span></td>
+                            <td>Survival: <span id='survival-skill' class='value'>0</span></td>
+                            <td> - </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class='block' id='char-stats'>
+                <h3 style="width: 5%;text-align:center;">HP</h3>
+                <input style="width: 10%; text-align: center;" id="hp-input" placeholder="0" type="number" min='0' max='9999999' value='0' key='hp'>
+                <h3 style="width: 3%;text-align:center;">/</h3>
+                <input style="width: 10%; text-align: center;" id="max-hp-input" placeholder="0" type="number" min='0' max='9999999' value='0' key='max_hp'>
+                <h3 style="width: 5%;text-align:center;">AC</h3>
+                <input style="width: 10%; text-align: center;" id="ac-input" placeholder="0" type="number" min='0' max='50' value='0' key='ac'>
+                <h3 style="width: 20%;text-align:center;">Initiative</h3>
+                <input style="width: 10%; text-align: center;" id="init-input" placeholder="0" type="number" value='0' min='-9999999' max='9999999' key='skills.initiative.value'>
+            </div>
+        </div>
+
+        <!-- Multi-purpose selection box -->
+        <div id='selection-box'></div>
+
+        <!-- Initiative Display Box -->
+        <div id='initiative-box'>
+            <div id='current-init'><img id='ci-img' src="" data-tooltip=''></div>
+            <div id='next-arrow'><img src="assets/next.png"></div>
+            <div id='next-init'><img id='ni-img' src="" data-tooltip=''></div>
+        </div>
+
+        <div id='initiative-sidebar'>
+            <h3>Attacks</h3>
+            <div id='atk-switches' class='noselect'>
+                <label class="switch" id='switch-adv'>
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label><span class="bold">Advantage</span><br>
+                
+                <label class="switch" id='switch-dis'>
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label><span class="bold">Disadvantage</span><br>
+                
+                <label class="switch" id='switch-magic'>
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label><span class="bold">Magic</span>
+            </div>
+            <div id='actions-panel'>
+
+            </div>
+        </div>
+    </body>
+</html>
