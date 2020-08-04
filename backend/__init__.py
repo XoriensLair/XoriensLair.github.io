@@ -3,7 +3,7 @@ from configparser import ConfigParser
 if not os.path.exists(os.path.join('logs','dump')):
     os.makedirs(os.path.join('logs','dump'))
 
-from OpenSSL import crypto, SSL
+'''from OpenSSL import crypto, SSL
 from random import SystemRandom
 
 r = SystemRandom()
@@ -32,6 +32,7 @@ def cert_gen(
     k.generate_key(crypto.TYPE_RSA, 4096)
     # create a self-signed cert
     cert = crypto.X509()
+    cert.set_version(3)
     cert.get_subject().C = countryName
     cert.get_subject().ST = stateOrProvinceName
     cert.get_subject().L = localityName
@@ -48,7 +49,7 @@ def cert_gen(
     with open(CERT_FILE, "wt") as f:
         f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode("utf-8"))
     with open(KEY_FILE, "wt") as f:
-        f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k).decode("utf-8"))
+        f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k).decode("utf-8"))'''
 
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 
@@ -466,14 +467,10 @@ def log_thread():
                 f.write('')
         time.sleep(10)
 
-if not os.path.exists('ssl'):
-    os.makedirs('ssl')
-    cert_gen()
-
 # Activates PyLink instance and sets commands
 ROOTLOG.info('Running LINK API on '+IP+':'+str(A_PORT))
 LINK = PyLink(
-    IP,A_PORT,os.path.join('ssl','key.pem'),os.path.join('ssl','cert.pem'),
+    IP,A_PORT,os.path.join('server.key'),os.path.join('server.crt'),
     newsession=instance.new_session,
     joinsession=instance.new_user,
     checkuser=instance.check_user,

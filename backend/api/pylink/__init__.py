@@ -49,7 +49,7 @@ class PyLink:
     def __init__(self,ip,api_port,ssl_key,ssl_cert,**commands):
         self.logger = logging.LoggerAdapter(logging.getLogger('root'),{'location':'PYLINK'})
         self.api = HTTPServer((ip,api_port),make_handler(self))
-        self.api.socket = ssl.wrap_socket(self.api.socket,keyfile=ssl_key,certfile=ssl_cert,server_side=True)
+        #self.api.socket = ssl.wrap_socket(self.api.socket,keyfile=ssl_key,certfile=ssl_cert,server_side=True)
         self.commands = commands
         self.ip = ip
     

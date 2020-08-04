@@ -149,3 +149,9 @@ _line_count.py
 client/docs_html/*.html
 cert.conf
 backend/ssl/*
+backend/*.key
+backend/*.pem
+backend/*.srl
+backend/*.cert
+backend/*.csr
+backend/*.crt
