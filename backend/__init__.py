@@ -7,8 +7,8 @@ from OpenSSL import crypto, SSL
 
 def cert_gen(
     serialNumber=0,
-    validityStartInSeconds=time.time(),
-    validityEndInSeconds=time.time()+10*365*24*60*60,
+    validityStartInSeconds=int(time.time()),
+    validityEndInSeconds=int(time.time())+10*365*24*60*60,
     KEY_FILE = os.path.join('ssl','key.pem'),
     CERT_FILE=os.path.join('ssl','cert.pem')):
     CERTCONFIG = ConfigParser()
