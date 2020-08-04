@@ -9,7 +9,7 @@ function command(command, data, port, callback) {
         "kwargs":data
     };
     $.post(
-        'http://' + API_SERVER + ':' + port.toString(),
+        'https://' + API_SERVER + ':' + port.toString(),
         sendData,
         callback,
         'json'
