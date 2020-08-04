@@ -147,3 +147,5 @@ local/*
 saves/*
 _line_count.py
 client/docs_html/*.html
+cert.conf
+backend/ssl/*

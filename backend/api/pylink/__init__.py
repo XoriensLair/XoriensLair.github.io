@@ -3,6 +3,7 @@ from subprocess import Popen
 import json
 import urllib.parse
 import os
+import ssl
 
 import logging
 
@@ -45,18 +46,13 @@ def make_handler(_link):
     return Handler
 
 class PyLink:
-    def __init__(self,ip,server_port,api_port,directory=None,python_path='python',server_path='server.py',**commands):
-        self.server = None
+    def __init__(self,ip,api_port,ssl_key,ssl_cert,**commands):
         self.logger = logging.LoggerAdapter(logging.getLogger('root'),{'location':'PYLINK'})
         self.api = HTTPServer((ip,api_port),make_handler(self))
+        self.api.socket = ssl.wrap_socket(self.api.socket,keyfile=ssl_key,certfile=ssl_cert,server_side=True)
         self.commands = commands
-        self.python_path = python_path
         self.ip = ip
-        self.server_port = server_port
-        self.directory = directory
-        self.server_path = server_path
     
     def serve_forever(self):
-        self.server = Popen([self.python_path,self.server_path,self.ip,str(self.server_port),str(self.directory)])
-        self.logger.debug('Webserver launched, launching API server')
+        self.logger.debug('Launching API server')
         self.api.serve_forever()

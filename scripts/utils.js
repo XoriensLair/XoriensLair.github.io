@@ -1,4 +1,5 @@
 var API_PORT = 1023;
+var API_SERVER = '207.38.165.56';
 
 // Base command function
 
@@ -8,7 +9,7 @@ function command(command, data, port, callback) {
         "kwargs":data
     };
     $.post(
-        'http://' + self.location.hostname + ':' + port.toString(),
+        'http://' + API_SERVER + ':' + port.toString(),
         sendData,
         callback,
         'json'
