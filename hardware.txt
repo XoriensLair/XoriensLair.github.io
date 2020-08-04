@@ -1,8 +1,0 @@
-Optimal hardware:
-- Raspberry Pi 4 - 2GB, $45
-- Acer V206HQL - LED monitor - 19.5", $77 - "https://www.cdw.com/product/Acer-V206HQL-LED-monitor-19.5in/3051875?cm_cat=google&cm_ite=3051875&cm_pla=NA-NA-Acer%20America_VL&cm_ven=acquirgy&ef_id=CjwKCAiAmNbwBRBOEiwAqcwwpaRhyqH6EypZpaDbPmc2z75mm9nr8eIdk0RmomDGgc7kSBBIuAbuGRoCp1IQAvD_BwE:G:s&gclid=CjwKCAiAmNbwBRBOEiwAqcwwpaRhyqH6EypZpaDbPmc2z75mm9nr8eIdk0RmomDGgc7kSBBIuAbuGRoCp1IQAvD_BwE&s_kwcid=AL!4223!3!198554567937!!!g!295020915102!"
-- LCD / LED 2 Touch IR Overlay Touch Screen Frame Panel Interactive 19.5" - With Glass 16:9, $160 - "https://www.amazon.com/gp/offer-listing/B074G3SFKF/ref=dp_olp_0?ie=UTF8&condition=all"
-
-Price: $282
-
-Note: Will require raw materials for casing. Perhaps use aluminum? Wood would work too, but will add more weight.
