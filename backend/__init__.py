@@ -4,9 +4,12 @@ if not os.path.exists(os.path.join('logs','dump')):
     os.makedirs(os.path.join('logs','dump'))
 
 from OpenSSL import crypto, SSL
+from random import SystemRandom
+
+r = SystemRandom()
 
 def cert_gen(
-    serialNumber=0,
+    serialNumber=r.randint(333,99999999),
     validityStartInSeconds=int(time.time()),
     validityEndInSeconds=int(time.time())+10*365*24*60*60,
     KEY_FILE = os.path.join('ssl','key.pem'),
